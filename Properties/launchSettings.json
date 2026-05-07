@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SolarSystemWiki (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SolarSystemWiki (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

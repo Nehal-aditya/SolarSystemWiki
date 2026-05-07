@@ -1,0 +1,178 @@
+<UserControl
+    x:Class="SolarSystemWiki.Controls.EntryDetailPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:SolarSystemWiki.Models"
+    xmlns:converters="using:SolarSystemWiki.Helpers"
+    Background="Transparent">
+
+    <UserControl.Resources>
+        <converters:StringToSolidBrushConverter x:Key="ColorToBrush"/>
+        <converters:SummaryVisibilityConverter x:Key="SummaryVis"/>
+    </UserControl.Resources>
+
+    <ScrollViewer
+        VerticalScrollBarVisibility="Auto"
+        Padding="32,24,32,32"
+        Background="Transparent">
+
+        <StackPanel Spacing="0" MaxWidth="860">
+
+            <!-- ── Hero header ── -->
+            <Grid Margin="0,0,0,28">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Spacing="6">
+
+                    <!-- Emoji + Title row -->
+                    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+
+                        <!-- Colored emoji badge -->
+                        <Border
+                            Width="56"
+                            Height="56"
+                            CornerRadius="14"
+                            Background="{x:Bind Entry.AccentColor, Mode=OneWay, Converter={StaticResource ColorToBrush}}">
+                            <TextBlock
+                                Text="{x:Bind Entry.Emoji, Mode=OneWay}"
+                                FontSize="28"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel VerticalAlignment="Center" Spacing="4">
+                            <TextBlock
+                                Text="{x:Bind Entry.Title, Mode=OneWay}"
+                                Style="{StaticResource TitleLargeTextBlockStyle}"
+                                FontWeight="Bold"/>
+
+                            <!-- Category badge -->
+                            <Border
+                                Background="{x:Bind Entry.AccentColor, Mode=OneWay, Converter={StaticResource ColorToBrush}}"
+                                CornerRadius="12"
+                                Padding="10,3"
+                                HorizontalAlignment="Left"
+                                Opacity="0.85">
+                                <TextBlock
+                                    Text="{x:Bind Entry.Category, Mode=OneWay}"
+                                    FontSize="11"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"/>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Action buttons -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top">
+                    <Button
+                        x:Name="EditButton"
+                        ToolTipService.ToolTip="Edit entry"
+                        Style="{StaticResource DefaultButtonStyle}"
+                        CornerRadius="8"
+                        Padding="12,8"
+                        Click="Edit_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE70F;" FontSize="13"/>
+                            <TextBlock Text="Edit"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button
+                        x:Name="DeleteButton"
+                        ToolTipService.ToolTip="Delete entry"
+                        CornerRadius="8"
+                        Padding="12,8"
+                        Click="Delete_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE74D;" FontSize="13" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                            <TextBlock Text="Delete" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ── Divider ── -->
+            <Border
+                Height="1"
+                Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                Margin="0,0,0,24"/>
+
+            <!-- ── Summary ── -->
+            <StackPanel
+                Spacing="8"
+                Margin="0,0,0,28"
+                Visibility="{x:Bind Entry.Summary, Mode=OneWay, Converter={StaticResource SummaryVis}}">
+                <TextBlock
+                    Text="Overview"
+                    Style="{StaticResource SubtitleTextBlockStyle}"
+                    FontWeight="SemiBold"/>
+                <TextBlock
+                    Text="{x:Bind Entry.Summary, Mode=OneWay}"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    TextWrapping="WrapWholeWords"
+                    LineHeight="24"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            </StackPanel>
+
+            <!-- ── Sections ── -->
+            <ItemsRepeater ItemsSource="{x:Bind Entry.Sections, Mode=OneWay}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="models:WikiSection">
+                        <StackPanel Spacing="8" Margin="0,0,0,28">
+
+                            <!-- Section heading -->
+                            <TextBlock
+                                Text="{x:Bind Heading}"
+                                Style="{StaticResource SubtitleTextBlockStyle}"
+                                FontWeight="SemiBold"/>
+
+                            <!-- Content -->
+                            <TextBlock
+                                Text="{x:Bind Content}"
+                                Style="{StaticResource BodyTextBlockStyle}"
+                                TextWrapping="WrapWholeWords"
+                                LineHeight="24"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                            <!-- Section divider -->
+                            <Border
+                                Height="1"
+                                Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                Opacity="0.4"
+                                Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+
+            <!-- ── Metadata footer ── -->
+            <StackPanel
+                Orientation="Horizontal"
+                Spacing="16"
+                Margin="0,8,0,0"
+                Opacity="0.5">
+                <TextBlock
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                    <Run Text="Created "/>
+                    <Run Text="{x:Bind Entry.CreatedAt, Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock
+                    Text="·"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                <TextBlock
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Foreground="{ThemeResource TextFillColorTertiaryBrush}">
+                    <Run Text="Updated "/>
+                    <Run Text="{x:Bind Entry.UpdatedAt, Mode=OneWay}"/>
+                </TextBlock>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
