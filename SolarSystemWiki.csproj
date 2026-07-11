@@ -7,7 +7,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>ARM64</Platforms>
     <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
-    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <!-- Change $(Platform) to lowercase arm64 to match standard pubxml profiles -->
+    <PublishProfile>win-arm64.pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <WinUISDKReferences>false</WinUISDKReferences>
     <EnableMsixTooling>true</EnableMsixTooling>
@@ -71,6 +72,16 @@
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
     <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
     <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
+    <!-- Added SelfContained rule here to resolve the trimming size error -->
+    <SelfContained Condition="'$(Configuration)' != 'Debug'">True</SelfContained>
     <PackageIcon>favicon-96x96.png</PackageIcon>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>F55A7DD70399BF888C2472680EF4B74EC2267332</PackageCertificateThumbprint>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>False</GenerateTestArtifacts>
+    <AppxBundle>Never</AppxBundle>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
 </Project>
