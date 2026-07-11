@@ -1,7 +1,4 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: .NET
+name: WinUI3 Windows 11 ARM64 Build
 
 on:
   push:
@@ -11,18 +8,28 @@ on:
 
 jobs:
   build:
-
-    runs-on: windows-2025-vs2026
+    # Use the native Windows 11 ARM64 runner for optimal speed and native execution
+    runs-on: windows-11-arm
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+
+    - name: Setup MSBuild (ARM64 Native)
+      uses: microsoft/setup-msbuild@v2
+      with:
+        msbuild-architecture: arm64
+
+    - name: Restore Dependencies
+      run: dotnet restore -r win-arm64
+
+    - name: Build WinUI 3 App
+      run: dotnet build --configuration Release -r win-arm64 --no-restore /p:Platform=arm64
+
+    - name: Run Tests
+      run: dotnet test --configuration Release -r win-arm64 --no-build --verbosity normal
